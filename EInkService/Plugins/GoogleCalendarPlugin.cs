@@ -1,10 +1,8 @@
 ﻿using EInkService.GoogleCalendar;
 using EInkService.Helper;
+using SixLabors.Fonts;
 using SixLabors.ImageSharp;
-using SixLabors.ImageSharp.PixelFormats;
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using static EInkService.Helper.DrawingHelper;
@@ -35,7 +33,15 @@ namespace EInkService.Plugins
                     break;
                 }
 
-                var titleSize = image.DrawString(events[i].Title, theme.RegularText, theme.PrimaryColor, startPoint);
+                FontRectangle titleSize;
+                if (string.IsNullOrEmpty(events[i].Title))
+                {
+                    titleSize = image.DrawString("<kein title>", theme.ItalicText, theme.PrimaryColor, startPoint);
+                }
+                else
+                {
+                    titleSize = image.DrawString(events[i].Title, theme.RegularText, theme.PrimaryColor, startPoint);
+                }
 
                 var text = GenerateDateText(events[i]);
                 image.DrawString(text, theme.SmallText, theme.PrimaryColor, new Point(startPoint.X, startPoint.Y + (int)titleSize.Height + theme.Margin));

@@ -1,7 +1,9 @@
 ﻿using EInkService.Converter;
 using EInkService.Options;
+using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using SixLabors.ImageSharp;
+using System.IO;
 using System.Net.Http;
 using System.Text.Json;
 using System.Threading.Tasks;
@@ -10,18 +12,20 @@ namespace EInkService.OpenWeatherMap
 {
     public class OpenWeatherMapService
     {
+        private readonly ILogger<OpenWeatherMapService> _logger;
         private readonly IHttpClientFactory _httpClientFactory;
         private readonly IOptions<WeatherOptions> _options;
 
-        public OpenWeatherMapService(IHttpClientFactory httpClientFactory, IOptions<WeatherOptions> options)
+        public OpenWeatherMapService(ILogger<OpenWeatherMapService> logger, IHttpClientFactory httpClientFactory, IOptions<WeatherOptions> options)
         {
+            _logger = logger;
             _httpClientFactory = httpClientFactory;
             _options = options;
         }
 
-        public async Task<GetCurrentWeatherResult> GetCurrentWeather(string cityName)
+        public async Task<GetOneCallApiResult> GetCurrentWeather(double lat, double lon)
         {
-            var url = $"https://api.openweathermap.org/data/2.5/weather?q={cityName}&appid={_options.Value.ApiKey}&lang=de";
+            var url = $"https://api.openweathermap.org/data/2.5/onecall?lat={lat}&lon={lon}&appid={_options.Value.ApiKey}&units=metric&lang=de";
 
             var message = new HttpRequestMessage(HttpMethod.Get, url);
 
@@ -32,12 +36,9 @@ namespace EInkService.OpenWeatherMap
             if (responseMessage.IsSuccessStatusCode)
             {
                 using var contentStream = await responseMessage.Content.ReadAsStreamAsync();
-                //using var reader = new StreamReader(contentStream);
-                //var text = reader.ReadToEnd();
-                //Console.WriteLine(text);
                 var options = new JsonSerializerOptions();
                 options.Converters.Add(new UnixTimeConverter());
-                var result = await JsonSerializer.DeserializeAsync<GetCurrentWeatherResult>(contentStream, options);
+                var result = await JsonSerializer.DeserializeAsync<GetOneCallApiResult>(contentStream, options);
                 return result;
             }
             return null;

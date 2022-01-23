@@ -35,7 +35,9 @@ namespace EInkService.Controllers
 
             var fontCollection = new FontCollection();
             fontCollection.Install("./Fonts/Plantin.ttf");
+            fontCollection.Install("./Fonts/WeatherIcons.ttf");
             var fontFamily = fontCollection.Find("Plantin");
+            var iconFont = fontCollection.Find("WeatherIcons");
 
             var theme = new Theme
             {
@@ -43,7 +45,11 @@ namespace EInkService.Controllers
                 Headline = fontFamily.CreateFont(18, FontStyle.Regular),
                 Subline = fontFamily.CreateFont(16, FontStyle.Italic),
                 RegularText = fontFamily.CreateFont(16, FontStyle.Regular),
+                ItalicText = fontFamily.CreateFont(16, FontStyle.Italic),
                 SmallText = fontFamily.CreateFont(12, FontStyle.Regular),
+                TemperatureText = fontFamily.CreateFont(30, FontStyle.Bold),
+                WeatherIconFont = iconFont.CreateFont(60, FontStyle.Regular),
+                DailyWeatherIconFont = iconFont.CreateFont(30, FontStyle.Regular),
 
                 PrimaryColor = Color.Black,
                 AccentColor = Color.Red,
