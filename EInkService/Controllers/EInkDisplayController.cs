@@ -83,9 +83,9 @@ namespace EInkService.Controllers
             image.Mutate(x => x.DrawImage(calendarImage, new Point(calendarX, calendarY), 1));
 
             MemoryStream ms = new MemoryStream();
-            image.Save(ms, new SixLabors.ImageSharp.Formats.Png.PngEncoder());
+            image.Save(ms, new SixLabors.ImageSharp.Formats.Bmp.BmpEncoder());
             ms.Seek(0, SeekOrigin.Begin);
-            return File(ms, "image/png");
+            return File(ms, "image/bmp");
         }
     }
 }
