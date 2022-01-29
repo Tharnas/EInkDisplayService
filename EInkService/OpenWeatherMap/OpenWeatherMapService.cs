@@ -25,6 +25,8 @@ namespace EInkService.OpenWeatherMap
 
         public async Task<GetOneCallApiResult> GetCurrentWeather(double lat, double lon)
         {
+            _logger.LogInformation ($"Trying to get weather information from lat: {lat} and lon: {lon}");
+
             var url = $"https://api.openweathermap.org/data/2.5/onecall?lat={lat}&lon={lon}&appid={_options.Value.ApiKey}&units=metric&lang=de";
 
             var message = new HttpRequestMessage(HttpMethod.Get, url);
@@ -41,6 +43,7 @@ namespace EInkService.OpenWeatherMap
                 var result = await JsonSerializer.DeserializeAsync<GetOneCallApiResult>(contentStream, options);
                 return result;
             }
+
             return null;
         }
 
