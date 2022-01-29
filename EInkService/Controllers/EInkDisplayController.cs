@@ -47,8 +47,8 @@ namespace EInkService.Controllers
                 RegularText = fontFamily.CreateFont(16, FontStyle.Regular),
                 ItalicText = fontFamily.CreateFont(16, FontStyle.Italic),
                 SmallText = fontFamily.CreateFont(12, FontStyle.Regular),
-                TemperatureText = fontFamily.CreateFont(30, FontStyle.Bold),
-                WeatherIconFont = iconFont.CreateFont(60, FontStyle.Regular),
+                TemperatureText = fontFamily.CreateFont(40, FontStyle.Bold),
+                WeatherIconFont = iconFont.CreateFont(70, FontStyle.Regular),
                 DailyWeatherIconFont = iconFont.CreateFont(30, FontStyle.Regular),
 
                 PrimaryColor = Color.Black,

@@ -12,15 +12,19 @@ namespace EInkService.Helper
         {
             var size = TextMeasurer.Measure(text, new RendererOptions(font));
 
+            var drawingOptions = new DrawingOptions();
+            drawingOptions.GraphicsOptions.Antialias = false;
+
             switch (alignX)
             {
                 case AlignEnum.Beginning:
+                    drawingOptions.TextOptions.HorizontalAlignment = HorizontalAlignment.Left;
                     break;
                 case AlignEnum.Center:
-                    point.X -= (int)(size.Width / 2);
+                    drawingOptions.TextOptions.HorizontalAlignment = HorizontalAlignment.Center;
                     break;
                 case AlignEnum.End:
-                    point.X -= (int)size.Width;
+                    drawingOptions.TextOptions.HorizontalAlignment = HorizontalAlignment.Right;
                     break;
                 default:
                     throw new ArgumentException(nameof(alignX));
@@ -29,18 +33,20 @@ namespace EInkService.Helper
             switch (alignY)
             {
                 case AlignEnum.Beginning:
+                    drawingOptions.TextOptions.VerticalAlignment = VerticalAlignment.Top;
                     break;
                 case AlignEnum.Center:
-                    point.Y -= (int)(size.Height / 2);
+                    drawingOptions.TextOptions.VerticalAlignment = VerticalAlignment.Center;
                     break;
                 case AlignEnum.End:
-                    point.Y -= (int)size.Height;
+                    drawingOptions.TextOptions.VerticalAlignment = VerticalAlignment.Bottom;
                     break;
                 default:
                     throw new ArgumentException(nameof(alignX));
             }
 
-            image.Mutate(x => x.DrawText(text, font, color, point));
+
+            image.Mutate(x => x.DrawText(drawingOptions, text, font, color, point));
 
             return size;
         }
