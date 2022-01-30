@@ -32,6 +32,7 @@ namespace EInkService.Controllers
             int height = 480;
 
             using Image image = new Image<Rgba32>(width, height);
+            image.Mutate(x => x.BackgroundColor(Color.White));
 
             var fontCollection = new FontCollection();
             fontCollection.Install("./Fonts/Plantin.ttf");

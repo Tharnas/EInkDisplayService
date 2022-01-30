@@ -44,7 +44,7 @@ namespace EInkService.Plugins
             image.Mutate(x => x.DrawImage(dailyWeatherImage, new Point(0, height * 2 / 3), 1));
         }
 
-        private void RenderTodayWeather(Image<Rgba32> image, Theme theme, GetOneCallApiResult result)
+        private void RenderTodayWeather(Image image, Theme theme, GetOneCallApiResult result)
         {
             var minTemp = result.hourly.Min(x => x.temp);
             var minTextSize = TextMeasurer.Measure($"{minTemp:0.0}°", new RendererOptions(theme.SmallText));
