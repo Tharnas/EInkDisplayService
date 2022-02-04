@@ -47,9 +47,9 @@ namespace EInkService.Plugins
         private void RenderTodayWeather(Image image, Theme theme, GetOneCallApiResult result)
         {
             var minTemp = result.hourly.Min(x => x.temp);
-            var minTextSize = TextMeasurer.Measure($"{minTemp:0.0}°", new RendererOptions(theme.SmallText));
+            var minTextSize = TextMeasurer.Measure($"{minTemp:0.0}°", new RendererOptions(theme.RegularText));
             var maxTemp = result.hourly.Max(x => x.temp);
-            var maxTextSize = TextMeasurer.Measure($"{maxTemp:0.0}°", new RendererOptions(theme.SmallText));
+            var maxTextSize = TextMeasurer.Measure($"{maxTemp:0.0}°", new RendererOptions(theme.RegularText));
 
 
             var graphX = Math.Max(minTextSize.Width, maxTextSize.Width) + 3;
@@ -69,8 +69,8 @@ namespace EInkService.Plugins
                 image.Mutate(x => x.DrawLines(theme.PrimaryColor, 1, new PointF(graphX, graphY + graphHeight), new PointF(graphX + graphWidth, graphY + graphHeight)));
             }
 
-            image.DrawString($"{maxTemp:0.0}°", theme.SmallText, theme.PrimaryColor, new Point((int)graphX, graphY), AlignEnum.End, AlignEnum.Center);
-            image.DrawString($"{minTemp:0.0}°", theme.SmallText, theme.PrimaryColor, new Point((int)graphX, graphY + graphHeight), AlignEnum.End, AlignEnum.Center);
+            image.DrawString($"{maxTemp:0.0}°", theme.RegularText, theme.PrimaryColor, new Point((int)graphX, graphY), AlignEnum.End, AlignEnum.Center);
+            image.DrawString($"{minTemp:0.0}°", theme.RegularText, theme.PrimaryColor, new Point((int)graphX, graphY + graphHeight), AlignEnum.End, AlignEnum.Center);
 
             var widthPerHour = graphWidth / result.hourly.Length;
 
@@ -104,7 +104,7 @@ namespace EInkService.Plugins
         {
             var weather = result.current.weather.First();
 
-            var descriptionMeasurement = image.DrawString(weather.description, theme.Subline, theme.PrimaryColor, new Point(image.Width / 5, image.Height), AlignEnum.Center, AlignEnum.End);
+            var descriptionMeasurement = image.DrawString(weather.description, theme.RegularText, theme.PrimaryColor, new Point(image.Width / 5, image.Height), AlignEnum.Center, AlignEnum.End);
             image.DrawString(GetIconFont(weather.icon), theme.WeatherIconFont, theme.PrimaryColor, new Point(image.Width / 5, (int)((image.Height - descriptionMeasurement.Height) / 2)), AlignEnum.Center, AlignEnum.Center);
 
 
@@ -126,7 +126,7 @@ namespace EInkService.Plugins
             currentY = currentY / 2;
             lastSize = image.DrawString($"{result.current.feels_like:0.0}°", theme.TemperatureText, theme.PrimaryColor, new Point(currentX, currentY), AlignEnum.Center, AlignEnum.Center);
             currentY += (int)(lastSize.Height / 2) + 2;
-            image.DrawString($"({result.current.temp:0.0}°)", theme.SmallText, theme.PrimaryColor, new Point(currentX, currentY), AlignEnum.Center, AlignEnum.Beginning);
+            image.DrawString($"({result.current.temp:0.0}°)", theme.RegularText, theme.PrimaryColor, new Point(currentX, currentY), AlignEnum.Center, AlignEnum.Beginning);
         }
 
         private static string GetIconFont(string icon)

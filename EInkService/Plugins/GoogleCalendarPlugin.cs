@@ -36,7 +36,7 @@ namespace EInkService.Plugins
                 FontRectangle titleSize;
                 if (string.IsNullOrEmpty(events[i].Title))
                 {
-                    titleSize = image.DrawString("<kein title>", theme.ItalicText, theme.PrimaryColor, startPoint);
+                    titleSize = image.DrawString("<kein title>", theme.RegularText, theme.PrimaryColor, startPoint);
                 }
                 else
                 {
@@ -44,7 +44,7 @@ namespace EInkService.Plugins
                 }
 
                 var text = GenerateDateText(events[i]);
-                image.DrawString(text, theme.SmallText, theme.PrimaryColor, new Point(startPoint.X, startPoint.Y + (int)titleSize.Height + theme.Margin));
+                image.DrawString(text, theme.RegularText, theme.PrimaryColor, new Point(startPoint.X, startPoint.Y + (int)titleSize.Height + theme.Margin));
             }
         }
 
