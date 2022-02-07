@@ -1,4 +1,5 @@
-﻿using EInkService.Plugins;
+﻿using EInkService.Encoders;
+using EInkService.Plugins;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using SixLabors.Fonts;
@@ -31,7 +32,7 @@ namespace EInkService.Controllers
             int width = 800;
             int height = 480;
 
-            using Image image = new Image<Rgba32>(width, height);
+            using var image = new Image<Rgba32>(width, height);
             image.Mutate(x => x.BackgroundColor(Color.White));
 
             var fontCollection = new FontCollection();
@@ -65,10 +66,6 @@ namespace EInkService.Controllers
             image.Mutate(x => x.DrawImage(weatherImage, new Point(weatherX, weatherY), 1));
 
 
-            // draw vertical line
-            //graphics.DrawLine(pen, new Point(width / 2, 0), new Point(width / 2, height));
-
-
             // calendar
             int calendarWidth = (width - theme.Margin) / 2;
             int calendarHeight = height;
@@ -80,10 +77,19 @@ namespace EInkService.Controllers
 
             image.Mutate(x => x.DrawImage(calendarImage, new Point(calendarX, calendarY), 1));
 
-            MemoryStream ms = new MemoryStream();
-            image.Save(ms, new SixLabors.ImageSharp.Formats.Bmp.BmpEncoder());
-            ms.Seek(0, SeekOrigin.Begin);
-            return File(ms, "image/bmp");
+            var ms = new MemoryStream();
+            if (HttpContext.Request.Headers.Accept == "application/einkdisplay")
+            {
+                image.Save(ms, new EInkDisplayEncoder());
+                ms.Seek(0, SeekOrigin.Begin);
+                return File(ms, "application/einkdisplay");
+            }
+            else
+            {
+                image.Save(ms, new SixLabors.ImageSharp.Formats.Bmp.BmpEncoder());
+                ms.Seek(0, SeekOrigin.Begin);
+                return File(ms, "image/bmp");
+            }
         }
     }
 }

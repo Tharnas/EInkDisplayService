@@ -58,15 +58,15 @@ namespace EInkService.Plugins
             var graphHeight = image.Height - graphY - 20;
 
 
-            image.Mutate(x => x.DrawLines(theme.PrimaryColor, 1, new PointF(graphX, graphY), new PointF(graphX, graphY + graphHeight)));
+            image.Mutate(x => x.DrawLines(theme.AccentColor, 2, new PointF(graphX, graphY), new PointF(graphX, graphY + graphHeight)));
             if (minTemp < 0 && maxTemp > 0)
             {
                 var zeroY = graphY + graphHeight - (graphHeight * (0 - minTemp) / (maxTemp - minTemp));
-                image.Mutate(x => x.DrawLines(theme.PrimaryColor, 1, new PointF(graphX, zeroY), new PointF(graphX + graphWidth, zeroY)));
+                image.Mutate(x => x.DrawLines(theme.AccentColor, 2, new PointF(graphX, zeroY), new PointF(graphX + graphWidth, zeroY)));
             }
             else
             {
-                image.Mutate(x => x.DrawLines(theme.PrimaryColor, 1, new PointF(graphX, graphY + graphHeight), new PointF(graphX + graphWidth, graphY + graphHeight)));
+                image.Mutate(x => x.DrawLines(theme.AccentColor, 2, new PointF(graphX, graphY + graphHeight), new PointF(graphX + graphWidth, graphY + graphHeight)));
             }
 
             image.DrawString($"{maxTemp:0.0}°", theme.RegularText, theme.PrimaryColor, new Point((int)graphX, graphY), AlignEnum.End, AlignEnum.Center);
@@ -75,7 +75,7 @@ namespace EInkService.Plugins
             var widthPerHour = graphWidth / result.hourly.Length;
 
             var points = result.hourly.Select((x, i) => new PointF(graphX + i * widthPerHour, x.temp != minTemp ? graphY + graphHeight - (graphHeight * (x.temp - minTemp) / (maxTemp - minTemp)) : graphY + graphHeight)).ToArray();
-            image.Mutate(x => x.DrawLines(theme.PrimaryColor, 2, points));
+            image.Mutate(x => x.DrawLines(theme.PrimaryColor, 3, points));
 
             //image.Mutate(x => x.DrawLines(theme.PrimaryColor, 2, new PointF(0, 0), new PointF(image.Width, 0), new PointF(image.Width, image.Height), new PointF(0, image.Height), new PointF(0, 0)));
         }
