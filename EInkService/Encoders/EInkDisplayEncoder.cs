@@ -49,7 +49,7 @@ namespace EInkService.Encoders
                     pixel.ToRgba32(ref color);
                     var position = 8 * ((y * image.Width + x) / 8) + 7 - (y * image.Width + x) % 8;
                     black.Set(position, !(color.R < 10 && color.G < 10 && color.B < 10));
-                    red.Set(position, color.R > 245 && color.G < 0 && color.B < 0);
+                    red.Set(position, color.R > 245 && color.G < 10 && color.B < 10);
                 }
             }
 
