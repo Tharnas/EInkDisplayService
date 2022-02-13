@@ -8,6 +8,7 @@ using SixLabors.ImageSharp.Drawing.Processing;
 using SixLabors.ImageSharp.PixelFormats;
 using SixLabors.ImageSharp.Processing;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using static EInkService.Helper.DrawingHelper;
@@ -46,38 +47,58 @@ namespace EInkService.Plugins
 
         private static void RenderTodayWeather(Image image, Theme theme, GetOneCallApiResult result)
         {
+            // min / max temperature
             var minTemp = result.hourly.Min(x => x.temp);
-            var minTextSize = TextMeasurer.Measure($"{minTemp:0.0}°", new RendererOptions(theme.RegularText));
             var maxTemp = result.hourly.Max(x => x.temp);
-            var maxTextSize = TextMeasurer.Measure($"{maxTemp:0.0}°", new RendererOptions(theme.RegularText));
 
+            // y labels
+            var minTemperatureToRender = (int)Math.Ceiling(minTemp);
+            var maxTemperatureToRender = (int)Math.Floor(maxTemp);
 
-            var graphX = Math.Max(minTextSize.Width, maxTextSize.Width) + 3;
+            var temperaturesToRender = Enumerable.Range(0, 5).Select((i, count) => maxTemperatureToRender - (i * (maxTemperatureToRender - minTemperatureToRender) / 4));
+
+            // position and dimensions of graph
+            var graphX = 3 + temperaturesToRender
+               .Select(x => TextMeasurer.Measure($"{x}°", new RendererOptions(theme.RegularText)).Width)
+               .Max();
             var graphWidth = image.Width - graphX - theme.Margin;
             var graphY = 20;
             var graphHeight = image.Height - graphY - 20;
 
-
-            image.Mutate(x => x.DrawLines(theme.AccentColor, 2, new PointF(graphX, graphY), new PointF(graphX, graphY + graphHeight)));
-            if (minTemp < 0 && maxTemp > 0)
-            {
-                var zeroY = graphY + graphHeight - (graphHeight * (0 - minTemp) / (maxTemp - minTemp));
-                image.Mutate(x => x.DrawLines(theme.AccentColor, 2, new PointF(graphX, zeroY), new PointF(graphX + graphWidth, zeroY)));
-            }
-            else
-            {
-                image.Mutate(x => x.DrawLines(theme.AccentColor, 2, new PointF(graphX, graphY + graphHeight), new PointF(graphX + graphWidth, graphY + graphHeight)));
-            }
-
-            image.DrawString($"{maxTemp:0.0}°", theme.RegularText, theme.PrimaryColor, new Point((int)graphX, graphY), AlignEnum.End, AlignEnum.Center);
-            image.DrawString($"{minTemp:0.0}°", theme.RegularText, theme.PrimaryColor, new Point((int)graphX, graphY + graphHeight), AlignEnum.End, AlignEnum.Center);
-
+            // width of one hour in pixel
             var widthPerHour = graphWidth / result.hourly.Length;
 
-            var points = result.hourly.Select((x, i) => new PointF(graphX + i * widthPerHour, x.temp != minTemp ? graphY + graphHeight - (graphHeight * (x.temp - minTemp) / (maxTemp - minTemp)) : graphY + graphHeight)).ToArray();
-            image.Mutate(x => x.DrawLines(theme.PrimaryColor, 3, points));
+            // y axis
+            //image.Mutate(x => x.DrawLines(theme.AccentColor, 2, new PointF(graphX, graphY), new PointF(graphX, graphY + graphHeight)));
 
-            //image.Mutate(x => x.DrawLines(theme.PrimaryColor, 2, new PointF(0, 0), new PointF(image.Width, 0), new PointF(image.Width, image.Height), new PointF(0, image.Height), new PointF(0, 0)));
+            // y axis label
+            foreach (var temperatureToRender in temperaturesToRender)
+            {
+                var y = temperatureToRender != minTemp ? graphY + graphHeight - (graphHeight * (temperatureToRender - minTemp) / (maxTemp - minTemp)) : graphY + graphHeight;
+                image.DrawString($"{temperatureToRender}°", theme.RegularText, theme.PrimaryColor, new Point((int)graphX, (int)y), AlignEnum.End, AlignEnum.Center);
+                //image.Mutate(x => x.DrawLines(theme.AccentColor, 2, new PointF(graphX - 3, y), new PointF(graphX + 3, y)));
+                image.Mutate(x => x.DrawLines(theme.AccentColor, 1, new PointF(graphX - 3, y), new PointF(graphX + graphWidth, y)));
+            }
+
+            // x axis
+            //image.Mutate(x => x.DrawLines(theme.AccentColor, 2, new PointF(graphX, graphY + graphHeight), new PointF(graphX + graphWidth, graphY + graphHeight)));
+
+            // x axis label
+            for (int i = 0; i < result.hourly.Length; i++)
+            {
+                if (result.hourly[i].dt.Hour % 6 == 0)
+                {
+                    var x = i * widthPerHour + graphX;
+                    image.Mutate(context => context.DrawLines(theme.AccentColor, 1, new[] { new PointF(x, graphY), new PointF(x, graphY + graphHeight + 3) }));
+                    //image.Mutate(context => context.DrawLines(theme.AccentColor, 2, new[] { new PointF(x, graphY + graphHeight - 3), new PointF(x, graphY + graphHeight + 3) }));
+                    image.DrawString(result.hourly[i].dt.ToString("HH"), theme.RegularText, theme.PrimaryColor, new Point((int)x, graphY + graphHeight + 5), AlignEnum.Center, AlignEnum.Beginning);
+                }
+            }
+
+
+            // temperature curve
+            var points = result.hourly.Select((x, i) => new PointF(graphX + i * widthPerHour, x.temp != minTemp ? graphY + graphHeight - (graphHeight * (x.temp - minTemp) / (maxTemp - minTemp)) : graphY + graphHeight)).ToArray();
+            image.Mutate(x => x.DrawLines(theme.PrimaryColor, 4, points));
         }
 
         private static void RenderDailyWeather(Image image, Theme theme, GetOneCallApiResult result)
