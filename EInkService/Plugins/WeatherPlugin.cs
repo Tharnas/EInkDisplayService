@@ -74,10 +74,10 @@ namespace EInkService.Plugins
             // y axis label
             foreach (var temperatureToRender in temperaturesToRender)
             {
-                var y = temperatureToRender != minTemp ? graphY + graphHeight - (graphHeight * (temperatureToRender - minTemp) / (maxTemp - minTemp)) : graphY + graphHeight;
+                var y = (int)(temperatureToRender != minTemp ? graphY + graphHeight - (graphHeight * (temperatureToRender - minTemp) / (maxTemp - minTemp)) : graphY + graphHeight);
                 image.DrawString($"{temperatureToRender}°", theme.RegularText, theme.PrimaryColor, new Point((int)graphX, (int)y), AlignEnum.End, AlignEnum.Center);
                 //image.Mutate(x => x.DrawLines(theme.AccentColor, 2, new PointF(graphX - 3, y), new PointF(graphX + 3, y)));
-                image.Mutate(x => x.DrawLines(theme.AccentColor, 1, new PointF(graphX - 3, y), new PointF(graphX + graphWidth, y)));
+                image.Mutate(x => x.DrawLines(theme.AccentColor, 1, new Point((int)graphX - 3, y), new Point((int)(graphX + graphWidth), y)));
             }
 
             // x axis
@@ -88,8 +88,8 @@ namespace EInkService.Plugins
             {
                 if (result.hourly[i].dt.Hour % 6 == 0)
                 {
-                    var x = i * widthPerHour + graphX;
-                    image.Mutate(context => context.DrawLines(theme.AccentColor, 1, new[] { new PointF(x, graphY), new PointF(x, graphY + graphHeight + 3) }));
+                    var x = (int)(i * widthPerHour + graphX);
+                    image.Mutate(context => context.DrawLines(theme.AccentColor, 1, new Point(x, graphY), new Point(x, graphY + graphHeight + 3)));
                     //image.Mutate(context => context.DrawLines(theme.AccentColor, 2, new[] { new PointF(x, graphY + graphHeight - 3), new PointF(x, graphY + graphHeight + 3) }));
                     image.DrawString(result.hourly[i].dt.ToString("HH"), theme.RegularText, theme.PrimaryColor, new Point((int)x, graphY + graphHeight + 5), AlignEnum.Center, AlignEnum.Beginning);
                 }
