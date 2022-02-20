@@ -22,7 +22,7 @@ namespace EInkService.Plugins
         {
             var events = await _googleCalendarService.GetCalendarEntries();
             
-            image.DrawString(DateTime.Now.ToString("D"), theme.Headline, theme.PrimaryColor, new Point(width / 2, theme.Margin), AlignEnum.Center);
+            image.DrawString(DateTime.Now.ToString("D"), theme.Headline, theme.PrimaryColor, new Point(width / 2, theme.Margin*2), AlignEnum.Center);
 
             for (int i = 0; i < events.Count; i++)
             {
@@ -36,15 +36,15 @@ namespace EInkService.Plugins
                 FontRectangle titleSize;
                 if (string.IsNullOrEmpty(events[i].Title))
                 {
-                    titleSize = image.DrawString("<kein title>", theme.RegularText, theme.PrimaryColor, startPoint);
+                    titleSize = image.DrawString("<kein title>", theme.CalendarTitle, theme.AccentColor, startPoint);
                 }
                 else
                 {
-                    titleSize = image.DrawString(events[i].Title, theme.RegularText, theme.PrimaryColor, startPoint);
+                    titleSize = image.DrawString(events[i].Title, theme.CalendarTitle, theme.AccentColor, startPoint);
                 }
 
                 var text = GenerateDateText(events[i]);
-                image.DrawString(text, theme.RegularText, theme.PrimaryColor, new Point(startPoint.X, startPoint.Y + (int)titleSize.Height + theme.Margin));
+                image.DrawString(text, theme.RegularText, theme.PrimaryColor, new Point(startPoint.X, startPoint.Y + (int)titleSize.Height));
             }
         }
 
@@ -79,6 +79,10 @@ namespace EInkService.Plugins
             else if (dateTime.Date == DateTime.Now.Date.AddDays(1))
             {
                 dateRange.Append("Morgen");
+            }
+            else if(dateTime.Year == DateTime.Now.Year)
+            {
+                dateRange.Append(dateTime.Date.ToString("dd/MM"));
             }
             else
             {

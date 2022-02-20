@@ -44,8 +44,9 @@ namespace EInkService.Controllers
             var theme = new Theme
             {
                 Margin = 5,
-                Headline = fontFamily.CreateFont(20, FontStyle.Regular),
-                RegularText = fontFamily.CreateFont(20, FontStyle.Regular),
+                Headline = fontFamily.CreateFont(30, FontStyle.Regular),
+                RegularText = fontFamily.CreateFont(22, FontStyle.Regular),
+                CalendarTitle = fontFamily.CreateFont(24, FontStyle.Bold),
                 TemperatureText = fontFamily.CreateFont(40, FontStyle.Bold),
                 WeatherIconFont = iconFont.CreateFont(70, FontStyle.Regular),
                 DailyWeatherIconFont = iconFont.CreateFont(30, FontStyle.Regular),
