@@ -132,15 +132,39 @@ namespace EInkService.Plugins
             var currentX = image.Width;
             var currentY = image.Height;
             FontRectangle lastSize;
-            lastSize = image.DrawString($"{result.current.sunrise:t} to {result.current.sunset:t} :Sun", theme.RegularText, theme.PrimaryColor, new Point(currentX, currentY), AlignEnum.End, AlignEnum.End);
+
+            lastSize = image.DrawString(" :Sun", theme.RegularText, theme.AccentColor, new Point(currentX, currentY), AlignEnum.End, AlignEnum.End);
+            currentX -= (int)lastSize.Width;
+            lastSize = image.DrawString(result.current.sunset.ToString("t"), theme.RegularText, theme.PrimaryColor, new Point(currentX, currentY), AlignEnum.End, AlignEnum.End);
+            currentX -= (int)lastSize.Width;
+            lastSize = image.DrawString(" to ", theme.RegularText, theme.AccentColor, new Point(currentX, currentY), AlignEnum.End, AlignEnum.End);
+            currentX -= (int)lastSize.Width;
+            lastSize = image.DrawString(result.current.sunrise.ToString("t"), theme.RegularText, theme.PrimaryColor, new Point(currentX, currentY), AlignEnum.End, AlignEnum.End);
+
+            currentX = image.Width;
             currentY -= (int)lastSize.Height + 2;
-            lastSize = image.DrawString($"{result.current.humidity}% :Humidity", theme.RegularText, theme.PrimaryColor, new Point(currentX, currentY), AlignEnum.End, AlignEnum.End);
+            lastSize = image.DrawString(" :Humidity", theme.RegularText, theme.AccentColor, new Point(currentX, currentY), AlignEnum.End, AlignEnum.End);
+            currentX -= (int)lastSize.Width;
+            lastSize = image.DrawString("%", theme.RegularText, theme.PrimaryColor, new Point(currentX, currentY), AlignEnum.End, AlignEnum.End);
+            currentX -= (int)lastSize.Width;
+            lastSize = image.DrawString(result.current.humidity.ToString(), theme.RegularText, theme.PrimaryColor, new Point(currentX, currentY), AlignEnum.End, AlignEnum.End);
+
+            currentX = image.Width;
             currentY -= (int)lastSize.Height + 2;
-            lastSize = image.DrawString($"{result.current.wind_speed * 3.6:0.0}km/h: Wind", theme.RegularText, theme.PrimaryColor, new Point(currentX, currentY), AlignEnum.End, AlignEnum.End);
+            lastSize = image.DrawString(" :Wind", theme.RegularText, theme.AccentColor, new Point(currentX, currentY), AlignEnum.End, AlignEnum.End);
+            currentX -= (int)lastSize.Width;
+            lastSize = image.DrawString("km/h", theme.RegularText, theme.PrimaryColor, new Point(currentX, currentY), AlignEnum.End, AlignEnum.End);
+            currentX -= (int)lastSize.Width;
+            lastSize = image.DrawString((result.current.wind_speed * 3.6).ToString("0.0"), theme.RegularText, theme.PrimaryColor, new Point(currentX, currentY), AlignEnum.End, AlignEnum.End);
+
+            currentX = image.Width;
             currentY -= (int)lastSize.Height + 2;
             lastSize = image.DrawString($"{result.daily.First().temp.max:0.#}° / {result.daily.First().temp.min:0.#}°", theme.RegularText, theme.PrimaryColor, new Point(currentX, currentY), AlignEnum.End, AlignEnum.End);
+
             currentY -= (int)lastSize.Height + 2;
-            lastSize = image.DrawString($"{result.current.uvi:0.#}: UV", theme.RegularText, theme.PrimaryColor, new Point(currentX, currentY), AlignEnum.End, AlignEnum.End);
+            lastSize = image.DrawString(" :UV", theme.RegularText, theme.AccentColor, new Point(currentX, currentY), AlignEnum.End, AlignEnum.End);
+            currentX -= (int)lastSize.Width;
+            lastSize = image.DrawString(result.current.uvi.ToString("0.#"), theme.RegularText, theme.PrimaryColor, new Point(currentX, currentY), AlignEnum.End, AlignEnum.End);
             currentY -= (int)lastSize.Height;
 
             currentX = image.Width / 2;
