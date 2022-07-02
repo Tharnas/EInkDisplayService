@@ -26,7 +26,7 @@ namespace EInkService.Plugins
 
             for (int i = 0; i < events.Count; i++)
             {
-                var startPoint = new Point(theme.Margin, (i + 1) * 60);
+                var startPoint = new Point(theme.Margin, (i + 1) * 70);
 
                 if (startPoint.Y >= height)
                 {
@@ -44,7 +44,7 @@ namespace EInkService.Plugins
                 }
 
                 var text = GenerateDateText(events[i]);
-                image.DrawString(text, theme.RegularText, theme.PrimaryColor, new Point(startPoint.X, startPoint.Y + (int)titleSize.Height));
+                image.DrawString(text, theme.CalendarDate, theme.PrimaryColor, new Point(startPoint.X, startPoint.Y + (int)titleSize.Height));
             }
         }
 

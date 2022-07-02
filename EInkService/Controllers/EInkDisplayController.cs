@@ -46,10 +46,11 @@ namespace EInkService.Controllers
                 Margin = 5,
                 Headline = fontFamily.CreateFont(30, FontStyle.Regular),
                 RegularText = fontFamily.CreateFont(22, FontStyle.Regular),
-                CalendarTitle = fontFamily.CreateFont(24, FontStyle.Bold),
+                CalendarTitle = fontFamily.CreateFont(26, FontStyle.Bold),
+                CalendarDate = fontFamily.CreateFont(24, FontStyle.Bold),
                 TemperatureText = fontFamily.CreateFont(40, FontStyle.Bold),
                 WeatherIconFont = iconFont.CreateFont(70, FontStyle.Regular),
-                DailyWeatherIconFont = iconFont.CreateFont(30, FontStyle.Regular),
+                DailyWeatherIconFont = iconFont.CreateFont(50, FontStyle.Regular),
 
                 PrimaryColor = Color.Black,
                 AccentColor = Color.Red,

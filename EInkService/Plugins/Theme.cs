@@ -11,6 +11,7 @@ namespace EInkService.Plugins
         public Font RegularText { get; set; }
         public Font WeatherIconFont { get; set; }
         public Font CalendarTitle { get; set; }
+        public Font CalendarDate { get; set; }
         public Font TemperatureText { get; set; }
         public Font DailyWeatherIconFont { get; internal set; }
 

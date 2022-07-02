@@ -103,9 +103,10 @@ namespace EInkService.Plugins
 
         private static void RenderDailyWeather(Image image, Theme theme, GetOneCallApiResult result)
         {
-            var dayWidth = image.Width / result.daily.Length;
+            var daysToDisplay = Math.Min(3, result.daily.Length);
+            var dayWidth = image.Width / daysToDisplay;
 
-            for (int i = 0; i < result.daily.Length; i++)
+            for (int i = 0; i < daysToDisplay; i++)
             {
                 var currentDailyTop = image.Height;
                 var dailyDaySize = image.DrawString(result.daily[i].dt.ToString("ddd"), theme.RegularText, theme.PrimaryColor, new Point(i * dayWidth + dayWidth / 2, currentDailyTop), AlignEnum.Center, AlignEnum.End);
@@ -133,7 +134,7 @@ namespace EInkService.Plugins
             var currentY = image.Height;
             FontRectangle lastSize;
 
-            lastSize = image.DrawString(" :Sun", theme.RegularText, theme.AccentColor, new Point(currentX, currentY), AlignEnum.End, AlignEnum.End);
+            lastSize = image.DrawString(" :S", theme.RegularText, theme.AccentColor, new Point(currentX, currentY), AlignEnum.End, AlignEnum.End);
             currentX -= (int)lastSize.Width;
             lastSize = image.DrawString(result.current.sunset.ToString("t"), theme.RegularText, theme.PrimaryColor, new Point(currentX, currentY), AlignEnum.End, AlignEnum.End);
             currentX -= (int)lastSize.Width;
@@ -143,7 +144,7 @@ namespace EInkService.Plugins
 
             currentX = image.Width;
             currentY -= (int)lastSize.Height + 2;
-            lastSize = image.DrawString(" :Humidity", theme.RegularText, theme.AccentColor, new Point(currentX, currentY), AlignEnum.End, AlignEnum.End);
+            lastSize = image.DrawString(" :H", theme.RegularText, theme.AccentColor, new Point(currentX, currentY), AlignEnum.End, AlignEnum.End);
             currentX -= (int)lastSize.Width;
             lastSize = image.DrawString("%", theme.RegularText, theme.PrimaryColor, new Point(currentX, currentY), AlignEnum.End, AlignEnum.End);
             currentX -= (int)lastSize.Width;
@@ -151,7 +152,7 @@ namespace EInkService.Plugins
 
             currentX = image.Width;
             currentY -= (int)lastSize.Height + 2;
-            lastSize = image.DrawString(" :Wind", theme.RegularText, theme.AccentColor, new Point(currentX, currentY), AlignEnum.End, AlignEnum.End);
+            lastSize = image.DrawString(" :W", theme.RegularText, theme.AccentColor, new Point(currentX, currentY), AlignEnum.End, AlignEnum.End);
             currentX -= (int)lastSize.Width;
             lastSize = image.DrawString("km/h", theme.RegularText, theme.PrimaryColor, new Point(currentX, currentY), AlignEnum.End, AlignEnum.End);
             currentX -= (int)lastSize.Width;
