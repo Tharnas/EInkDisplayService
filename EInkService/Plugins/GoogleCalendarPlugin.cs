@@ -21,8 +21,8 @@ namespace EInkService.Plugins
         public async Task DrawAsync(Image image, int width, int height, Theme theme)
         {
             var events = await _googleCalendarService.GetCalendarEntries();
-            
-            image.DrawString(DateTime.Now.ToString("D"), theme.Headline, theme.PrimaryColor, new Point(width / 2, theme.Margin*2), AlignEnum.Center);
+
+            image.DrawString(DateTime.Now.ToString("D"), theme.Headline, theme.PrimaryColor, new Point(width / 2, theme.Margin * 2), AlignEnum.Center);
 
             for (int i = 0; i < events.Count; i++)
             {
@@ -51,21 +51,35 @@ namespace EInkService.Plugins
         private static string GenerateDateText(CalendarEvent e)
         {
             var dateText = new StringBuilder();
-            DayText(e.Start, dateText);
 
-            dateText.Append(" von ");
-
-            dateText.Append(e.Start.ToString("t"));
-
-            dateText.Append(" bis ");
-
-            if (e.Start.Date != e.End.Date)
+            if (e.IsAllDay)
             {
-                DayText(e.End, dateText);
-            }
+                DayText(e.Start, dateText);
 
-            dateText.Append(" ");
-            dateText.Append(e.End.ToString("t"));
+                if (e.Start.Date != e.End.Date)
+                {
+                    dateText.Append(" bis ");
+                    DayText(e.End, dateText);
+                }
+            }
+            else
+            {
+                DayText(e.Start, dateText);
+
+                dateText.Append(" von ");
+
+                dateText.Append(e.Start.ToString("t"));
+
+                dateText.Append(" bis ");
+
+                if (e.Start.Date != e.End.Date)
+                {
+                    DayText(e.End, dateText);
+                    dateText.Append(" ");
+                }
+
+                dateText.Append(e.End.ToString("t"));
+            }
 
             return dateText.ToString();
         }
@@ -80,7 +94,7 @@ namespace EInkService.Plugins
             {
                 dateRange.Append("Morgen");
             }
-            else if(dateTime.Year == DateTime.Now.Year)
+            else if (dateTime.Year == DateTime.Now.Year)
             {
                 dateRange.Append(dateTime.Date.ToString("dd/MM"));
             }

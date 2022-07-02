@@ -52,6 +52,7 @@ namespace EInkService.GoogleCalendar
                 {
                     result.Add(new CalendarEvent
                     {
+                        IsAllDay = !eventItem.Start.DateTime.HasValue && !eventItem.End.DateTime.HasValue,
                         Start = eventItem.Start.DateTime.HasValue ? eventItem.Start.DateTime.Value : DateTime.ParseExact(eventItem.Start.Date, "yyyy-MM-dd", CultureInfo.InvariantCulture),
                         End = eventItem.End.DateTime.HasValue ? eventItem.End.DateTime.Value : DateTime.ParseExact(eventItem.End.Date, "yyyy-MM-dd", CultureInfo.InvariantCulture).AddHours(23).AddMinutes(59),
                         Title = eventItem.Summary
