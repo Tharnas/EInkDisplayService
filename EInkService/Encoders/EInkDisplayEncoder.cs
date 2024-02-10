@@ -11,6 +11,8 @@ namespace EInkService.Encoders
 {
     public class EInkDisplayEncoder : IImageEncoder
     {
+        public bool SkipMetadata { get; init; }
+
         public void Encode<TPixel>(Image<TPixel> image, Stream stream) where TPixel : unmanaged, IPixel<TPixel>
         {
             var (black, red) = GetBitArrays(image);

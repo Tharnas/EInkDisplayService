@@ -12,6 +12,8 @@ namespace EInkService.Encoders
 {
     public class EInkDisplayDebuggerEncoder : IImageEncoder
     {
+        public bool SkipMetadata { get; init; }
+
         public void Encode<TPixel>(Image<TPixel> image, Stream stream) where TPixel : unmanaged, IPixel<TPixel>
         {
             var (black, red) = GetBitArrays(image);
@@ -39,7 +41,7 @@ namespace EInkService.Encoders
             newImage.Save(stream, new SixLabors.ImageSharp.Formats.Bmp.BmpEncoder());
         }
 
-        public async Task EncodeAsync<TPixel>(Image<TPixel> image, Stream stream, CancellationToken cancellationToken) where TPixel : unmanaged, IPixel<TPixel>
+        public Task EncodeAsync<TPixel>(Image<TPixel> image, Stream stream, CancellationToken cancellationToken) where TPixel : unmanaged, IPixel<TPixel>
         {
             throw new NotImplementedException();
         }

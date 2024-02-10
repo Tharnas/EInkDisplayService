@@ -8,7 +8,6 @@ using SixLabors.ImageSharp.Drawing.Processing;
 using SixLabors.ImageSharp.PixelFormats;
 using SixLabors.ImageSharp.Processing;
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using static EInkService.Helper.DrawingHelper;
@@ -59,7 +58,7 @@ namespace EInkService.Plugins
 
             // position and dimensions of graph
             var graphX = 3 + temperaturesToRender
-               .Select(x => TextMeasurer.Measure($"{x}°", new RendererOptions(theme.RegularText)).Width)
+               .Select(x => TextMeasurer.MeasureSize($"{x}°", new TextOptions(theme.RegularText)).Width)
                .Max();
             var graphWidth = image.Width - graphX - theme.Margin;
             var graphY = 20;
@@ -69,19 +68,19 @@ namespace EInkService.Plugins
             var widthPerHour = graphWidth / result.hourly.Length;
 
             // y axis
-            //image.Mutate(x => x.DrawLines(theme.AccentColor, 2, new PointF(graphX, graphY), new PointF(graphX, graphY + graphHeight)));
+            //image.Mutate(x => x.DrawLine(theme.AccentColor, 2, new PointF(graphX, graphY), new PointF(graphX, graphY + graphHeight)));
 
             // y axis label
             foreach (var temperatureToRender in temperaturesToRender)
             {
                 var y = (int)(temperatureToRender != minTemp ? graphY + graphHeight - (graphHeight * (temperatureToRender - minTemp) / (maxTemp - minTemp)) : graphY + graphHeight);
                 image.DrawString($"{temperatureToRender}°", theme.RegularText, theme.PrimaryColor, new Point((int)graphX, (int)y), AlignEnum.End, AlignEnum.Center);
-                //image.Mutate(x => x.DrawLines(theme.AccentColor, 2, new PointF(graphX - 3, y), new PointF(graphX + 3, y)));
-                image.Mutate(x => x.DrawLines(theme.AccentColor, 1, new Point((int)graphX - 3, y), new Point((int)(graphX + graphWidth), y)));
+                //image.Mutate(x => x.DrawLine(theme.AccentColor, 2, new PointF(graphX - 3, y), new PointF(graphX + 3, y)));
+                image.Mutate(x => x.DrawLine(theme.AccentColor, 1, new Point((int)graphX - 3, y), new Point((int)(graphX + graphWidth), y)));
             }
 
             // x axis
-            //image.Mutate(x => x.DrawLines(theme.AccentColor, 2, new PointF(graphX, graphY + graphHeight), new PointF(graphX + graphWidth, graphY + graphHeight)));
+            //image.Mutate(x => x.DrawLine(theme.AccentColor, 2, new PointF(graphX, graphY + graphHeight), new PointF(graphX + graphWidth, graphY + graphHeight)));
 
             // x axis label
             for (int i = 0; i < result.hourly.Length; i++)
@@ -89,16 +88,16 @@ namespace EInkService.Plugins
                 if (result.hourly[i].dt.Hour % 6 == 0)
                 {
                     var x = (int)(i * widthPerHour + graphX);
-                    image.Mutate(context => context.DrawLines(theme.AccentColor, 1, new Point(x, graphY), new Point(x, graphY + graphHeight + 3)));
-                    //image.Mutate(context => context.DrawLines(theme.AccentColor, 2, new[] { new PointF(x, graphY + graphHeight - 3), new PointF(x, graphY + graphHeight + 3) }));
-                    image.DrawString(result.hourly[i].dt.ToString("HH"), theme.RegularText, theme.PrimaryColor, new Point((int)x, graphY + graphHeight + 5), AlignEnum.Center, AlignEnum.Beginning);
+                    image.Mutate(context => context.DrawLine(theme.AccentColor, 1, new Point(x, graphY), new Point(x, graphY + graphHeight + 3)));
+                    //image.Mutate(context => context.DrawLine(theme.AccentColor, 2, new[] { new PointF(x, graphY + graphHeight - 3), new PointF(x, graphY + graphHeight + 3) }));
+                    image.DrawString(result.hourly[i].dt.ToString("HH"), theme.RegularText, theme.PrimaryColor, new Point((int)x, graphY + graphHeight - 2), AlignEnum.Center, AlignEnum.Beginning);
                 }
             }
 
 
             // temperature curve
             var points = result.hourly.Select((x, i) => new PointF(graphX + i * widthPerHour, x.temp != minTemp ? graphY + graphHeight - (graphHeight * (x.temp - minTemp) / (maxTemp - minTemp)) : graphY + graphHeight)).ToArray();
-            image.Mutate(x => x.DrawLines(theme.PrimaryColor, 4, points));
+            image.Mutate(x => x.DrawLine(theme.PrimaryColor, 4, points));
         }
 
         private static void RenderDailyWeather(Image image, Theme theme, GetOneCallApiResult result)
@@ -126,7 +125,7 @@ namespace EInkService.Plugins
         {
             var weather = result.current.weather.First();
 
-            var descriptionMeasurement = image.DrawString(weather.description, theme.RegularText, theme.PrimaryColor, new Point(image.Width / 5, image.Height), AlignEnum.Center, AlignEnum.End);
+            var descriptionMeasurement = image.DrawString(weather.description, theme.RegularText, theme.PrimaryColor, new Point(image.Width / 5, image.Height - 5), AlignEnum.Center, AlignEnum.End);
             image.DrawString(GetIconFont(weather.icon), theme.WeatherIconFont, theme.PrimaryColor, new Point(image.Width / 5, (int)((image.Height - descriptionMeasurement.Height) / 2)), AlignEnum.Center, AlignEnum.Center);
 
 
@@ -154,9 +153,7 @@ namespace EInkService.Plugins
             currentY -= (int)lastSize.Height + 2;
             lastSize = image.DrawString(" :W", theme.RegularText, theme.AccentColor, new Point(currentX, currentY), AlignEnum.End, AlignEnum.End);
             currentX -= (int)lastSize.Width;
-            lastSize = image.DrawString("km/h", theme.RegularText, theme.PrimaryColor, new Point(currentX, currentY), AlignEnum.End, AlignEnum.End);
-            currentX -= (int)lastSize.Width;
-            lastSize = image.DrawString((result.current.wind_speed * 3.6).ToString("0.0"), theme.RegularText, theme.PrimaryColor, new Point(currentX, currentY), AlignEnum.End, AlignEnum.End);
+            lastSize = image.DrawString($"{result.current.wind_speed * 3.6:0.0}km/h", theme.RegularText, theme.PrimaryColor, new Point(currentX, currentY), AlignEnum.End, AlignEnum.End);
 
             currentX = image.Width;
             currentY -= (int)lastSize.Height + 2;
@@ -169,9 +166,9 @@ namespace EInkService.Plugins
             currentY -= (int)lastSize.Height;
 
             currentX = image.Width / 2;
-            currentY = currentY / 2;
-            lastSize = image.DrawString($"{result.current.feels_like:0.0}°", theme.TemperatureText, theme.PrimaryColor, new Point(currentX, currentY), AlignEnum.Center, AlignEnum.Center);
-            currentY += (int)(lastSize.Height / 2) + 2;
+            currentY = 0;
+            lastSize = image.DrawString($"{result.current.feels_like:0.0}°", theme.TemperatureText, theme.PrimaryColor, new Point(currentX, currentY), AlignEnum.Center, AlignEnum.Beginning);
+            currentY += (int)lastSize.Height + 2;
             image.DrawString($"({result.current.temp:0.0}°)", theme.RegularText, theme.PrimaryColor, new Point(currentX, currentY), AlignEnum.Center, AlignEnum.Beginning);
         }
 

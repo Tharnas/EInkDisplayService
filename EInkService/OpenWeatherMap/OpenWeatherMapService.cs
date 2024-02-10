@@ -3,7 +3,6 @@ using EInkService.Options;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using SixLabors.ImageSharp;
-using System.IO;
 using System.Net.Http;
 using System.Text.Json;
 using System.Threading.Tasks;

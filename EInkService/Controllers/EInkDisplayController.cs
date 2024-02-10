@@ -36,10 +36,10 @@ namespace EInkService.Controllers
             image.Mutate(x => x.BackgroundColor(Color.White));
 
             var fontCollection = new FontCollection();
-            fontCollection.Install("./Fonts/Plantin.ttf");
-            fontCollection.Install("./Fonts/WeatherIcons.ttf");
-            var fontFamily = fontCollection.Find("Plantin");
-            var iconFont = fontCollection.Find("WeatherIcons");
+            fontCollection.Add("./Fonts/Plantin.ttf");
+            fontCollection.Add("./Fonts/WeatherIcons.ttf");
+            var fontFamily = fontCollection.Get("Plantin");
+            var iconFont = fontCollection.Get("WeatherIcons");
 
             var theme = new Theme
             {
