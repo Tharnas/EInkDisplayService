@@ -3,6 +3,7 @@ using EInkService.Options;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using SixLabors.ImageSharp;
+using System.IO;
 using System.Net.Http;
 using System.Text.Json;
 using System.Threading.Tasks;
@@ -26,7 +27,7 @@ namespace EInkService.OpenWeatherMap
         {
             _logger.LogInformation ($"Trying to get weather information from lat: {lat} and lon: {lon}");
 
-            var url = $"https://api.openweathermap.org/data/2.5/onecall?lat={lat}&lon={lon}&appid={_options.Value.ApiKey}&units=metric&lang=de";
+            var url = $"https://api.openweathermap.org/data/3.0/onecall?lat={lat}&lon={lon}&appid={_options.Value.ApiKey}&units=metric&lang=de";
 
             var message = new HttpRequestMessage(HttpMethod.Get, url);
 
@@ -42,6 +43,10 @@ namespace EInkService.OpenWeatherMap
                 var result = await JsonSerializer.DeserializeAsync<GetOneCallApiResult>(contentStream, options);
                 return result;
             }
+
+            using var errorContentStream = await responseMessage.Content.ReadAsStreamAsync();
+            var reader = new StreamReader(errorContentStream);
+            _logger.LogError(reader.ReadToEnd());
 
             return null;
         }
